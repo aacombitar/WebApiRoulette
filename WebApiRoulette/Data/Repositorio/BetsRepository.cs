@@ -18,7 +18,7 @@ namespace WebApiRoulette.Data.Repositorio
         private readonly IMapper mapper;
         private readonly ILogger<BetsRepository> logger;
 
-        public BetsRepository(ApplicationDBContext context, IMapper mapper,ILogger<BetsRepository> logger)
+        public BetsRepository(ApplicationDBContext context, IMapper mapper, ILogger<BetsRepository> logger)
         {
             this.context = context;
             this.mapper = mapper;
@@ -40,7 +40,6 @@ namespace WebApiRoulette.Data.Repositorio
                 logger.LogCritical("Error en CreateBetAsync" + ex.Message);
                 return false;
             }
-
         }
         private async Task<int> GetIdRouletteOpened()
         {
@@ -56,14 +55,14 @@ namespace WebApiRoulette.Data.Repositorio
         {
             try
             {
-            var existRoulette = await CloseRoullet(idRoulette:idRoulette);
-            if (!existRoulette)
-            {
-                return null;
-            }
-            var lstRoulette = await SetNumberWinner(idRoulette:idRoulette);
-            var lstRouletteDto = mapper.Map<List<BetDto>>(lstRoulette);
-            return lstRouletteDto;
+                var existRoulette = await CloseRoullet(idRoulette: idRoulette);
+                if (!existRoulette)
+                {
+                    return null;
+                }
+                var lstRoulette = await SetNumberWinner(idRoulette: idRoulette);
+                var lstRouletteDto = mapper.Map<List<BetDto>>(lstRoulette);
+                return lstRouletteDto;
             }
             catch (Exception ex)
             {
@@ -71,7 +70,6 @@ namespace WebApiRoulette.Data.Repositorio
                 return null;
             }
         }
-
         private async Task<bool> CloseRoullet(int idRoulette)
         {
             Roulette roulette = await (from r in context.Roulettes
@@ -86,28 +84,26 @@ namespace WebApiRoulette.Data.Repositorio
             await context.SaveChangesAsync();
             return true;
         }
-
-
         private async Task<List<Bet>> SetNumberWinner(int idRoulette)
         {
             Random rnd = new Random();
             int numWinner = rnd.Next(0, 36);
-            return await setWinnerPayout(idRoulette:idRoulette, numWinner:numWinner);
+            return await setWinnerPayout(idRoulette: idRoulette, numWinner: numWinner);
         }
-
-        private async Task<List<Bet>> setWinnerPayout(int idRoulette,int numWinner)
+        private async Task<List<Bet>> setWinnerPayout(int idRoulette, int numWinner)
         {
-            var lstBet = await(from b in context.Bets join r in context.Roulettes
-                               on b.RouletteId equals r.Id
-                               where b.RouletteId == idRoulette && 
-                               (b.DateBet >= r.OpenDate && b.DateBet <= r.CloseDate)
-                               select b).ToListAsync();
+            var lstBet = await (from b in context.Bets
+                                join r in context.Roulettes
+         on b.RouletteId equals r.Id
+                                where b.RouletteId == idRoulette &&
+                                (b.DateBet >= r.OpenDate && b.DateBet <= r.CloseDate)
+                                select b).ToListAsync();
             foreach (var winner in lstBet)
             {
                 if (winner.Number == numWinner)
                 {
-                  winner.ValuePayout = winner.ValueBet * 5;
-                        winner.Winner = true;
+                    winner.ValuePayout = winner.ValueBet * 5;
+                    winner.Winner = true;
                 }
                 else
                 {
@@ -120,8 +116,8 @@ namespace WebApiRoulette.Data.Repositorio
                     }
 
                 }
-                    await context.SaveChangesAsync();
-             }
+                await context.SaveChangesAsync();
+            }
 
             return lstBet;
         }

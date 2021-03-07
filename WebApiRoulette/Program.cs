@@ -31,7 +31,6 @@ namespace WebApiRoulette
                 {
                     config.AddCommandLine(args);
                 }
-
             })   
                 .UseStartup<Startup>();
     }

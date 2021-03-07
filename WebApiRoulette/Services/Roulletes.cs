@@ -7,20 +7,16 @@ using WebApiRoulette.Dto;
 
 namespace WebApiRoulette.Services
 {
-    public class Roulletes: IRoulettes
+    public class Roulletes : IRoulettes
     {
         private readonly RouletteRepository betsRepository;
-
         public Roulletes(RouletteRepository betsRepository)
         {
             this.betsRepository = betsRepository;
         }
-
-
         public async Task<bool> OpenRoulette(int idRoulette)
         {
-            return await betsRepository.OpenRouletteAsync(idRoulette:idRoulette);
-
+            return await betsRepository.OpenRouletteAsync(idRoulette: idRoulette);
         }
         public async Task<RouletteDto> CreateRoulette()
         {

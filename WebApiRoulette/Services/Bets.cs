@@ -11,19 +11,17 @@ namespace WebApiRoulette.Services
     public class Bets : IBets
     {
         private readonly BetsRepository betsRepository;
-
         public Bets(BetsRepository betsRepository)
         {
             this.betsRepository = betsRepository;
         }
-        public async Task<bool> CreateBets(BetCreateDto betCreateDto )
+        public async Task<bool> CreateBets(BetCreateDto betCreateDto)
         {
-            return  await betsRepository.CreateBetAsync(betCreateDto);
+            return await betsRepository.CreateBetAsync(betCreateDto);
         }
-
         public async Task<List<BetDto>> ResultsBets(int idRoulette)
         {
-            return await betsRepository.ResultBetAsync(idRoulette:idRoulette);
+            return await betsRepository.ResultBetAsync(idRoulette: idRoulette);
         }
     }
 }

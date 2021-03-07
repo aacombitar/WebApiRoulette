@@ -10,14 +10,13 @@ namespace WebApiRoulette.Helpers
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value== null || string.IsNullOrEmpty(value.ToString()))
+            if (value == null || string.IsNullOrEmpty(value.ToString()))
             {
                 return ValidationResult.Success;
             }
-
-            if (value.ToString().ToLower() == "negro" || value.ToString().ToLower() == "rojo") 
+            if (value.ToString().ToLower() == "negro" || value.ToString().ToLower() == "rojo")
             {
-              return ValidationResult.Success;
+                return ValidationResult.Success;
             }
             return new ValidationResult("El color debe ser negro o rojo");
 

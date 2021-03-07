@@ -25,17 +25,15 @@ namespace WebApiRoulette
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
-        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(configuration => 
+            services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<Roulette, RouletteDto>();
                 configuration.CreateMap<RouletteCreateDto, Roulette>();
-                configuration.CreateMap<Bet, RouletteDto>(); 
+                configuration.CreateMap<Bet, RouletteDto>();
                 configuration.CreateMap<BetCreateDto, Bet>();
             }, typeof(Startup));
             services.AddTransient<IBets, Bets>();
@@ -46,7 +44,6 @@ namespace WebApiRoulette
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

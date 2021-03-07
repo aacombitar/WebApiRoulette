@@ -39,8 +39,8 @@ namespace WebApiRoulette.Controllers
         public async Task<ActionResult<RouletteDto>> CreateRoulette()
         {
             RouletteDto roulletteDto = await roulettes.CreateRoulette();
-        
-            return new CreatedAtRouteResult("GetRoulette", new { id = roulletteDto.Id}, roulletteDto.Id);
+
+            return new CreatedAtRouteResult("GetRoulette", new { id = roulletteDto.Id }, roulletteDto.Id);
         }
         [HttpGet("open/{idroulette:int}")]
         public async Task<ActionResult> OpenRoulette(int idroulette)
