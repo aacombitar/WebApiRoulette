@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+    - master
+variables:
+- name: solution
+  value: '**/*.sln'
+- name: buildPlatform
+  value: 'Any CPU'
+- name: buildConfiguration
+  value: 'Release'
+stages:
+- stage: __default
+  jobs:
+  - job: Job
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: VSTest@2
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: JMeterInstaller@0
+      displayName: 'Install JMeter 5.2.1'
+      continueOnError: true
+    - task: UsePythonVersion@0
+      displayName: 'Use Python'
+      inputs:
+        versionSpec: 3
+    - task: CmdLine@2
+      displayName: 'Check pre-requisite to install Taurus'
+      inputs:
+        script: |
+          pip install --upgrade wheel setuptools Cython
+          pip install bzt
+          pip install --upgrade bzt
+    - task: TaurusInstaller@0
+      displayName: 'Install Taurus  1.15.1'
+      inputs:
+        taurusVersion: ' 1.15.1'
+        pythonCommand: python
+      continueOnError: true
+      condition: succeededOrFailed()
+    - task: TaurusRunner@0
+      displayName: 'Run Taurus'
+      inputs:
+        taurusConfig: |
+          modules:
+            jmeter:
+              properties:
+                serverName: jsonplaceholder.typicode.com
+          execution:
+          - scenario:
+              script: prueba-concepto.jmx
+          reporting:
+          - module: junit-xml
+            filename: junitReport.xml
+      condition: succeededOrFailed()
+    - task: PublishTestResults@2
+      displayName: 'Test Report'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/junitReport.xml'
+        mergeTestResults: true
+        testRunTitle: 'functional-APIs test report'
+
