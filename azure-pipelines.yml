@@ -33,31 +33,31 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-steps:
-    - task: JMeterInstaller@0
-      displayName: 'Install JMeter 5.2.1'
-      continueOnError: true
-    - task: UsePythonVersion@0
-      displayName: 'Use Python'
-      inputs:
+
+- task: JMeterInstaller@0
+  displayName: 'Install JMeter 5.2.1'
+  continueOnError: true
+- task: UsePythonVersion@0
+  displayName: 'Use Python'
+  inputs:
         versionSpec: 3
-    - task: CmdLine@2
-      displayName: 'Check pre-requisite to install Taurus'
-      inputs:
-        script: |
+- task: CmdLine@2
+  displayName: 'Check pre-requisite to install Taurus'
+  inputs:
+    script: |
           pip install --upgrade wheel setuptools Cython
           pip install bzt
           pip install --upgrade bzt
-    - task: TaurusInstaller@0
-      displayName: 'Install Taurus  1.15.1'
-      inputs:
-        taurusVersion: ' 1.15.1'
-        pythonCommand: python
-      continueOnError: true
-      condition: succeededOrFailed()
-    - task: TaurusRunner@0
-      displayName: 'Run Taurus'
-      inputs:
+- task: TaurusInstaller@0
+  displayName: 'Install Taurus  1.15.1'
+  inputs:
+    taurusVersion: ' 1.15.1'
+    pythonCommand: python
+  continueOnError: true
+  condition: succeededOrFailed()
+- task: TaurusRunner@0
+  displayName: 'Run Taurus'
+  inputs:
         taurusConfig: |
           modules:
             jmeter:
@@ -69,11 +69,11 @@ steps:
           reporting:
           - module: junit-xml
             filename: junitReport.xml
-      condition: succeededOrFailed()
-    - task: PublishTestResults@2
-      displayName: 'Test Report'
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFiles: '**/junitReport.xml'
-        mergeTestResults: true
-        testRunTitle: 'functional-APIs test report'
+  condition: succeededOrFailed()
+- task: PublishTestResults@2
+  displayName: 'Test Report'
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFiles: '**/junitReport.xml'
+    mergeTestResults: true
+    testRunTitle: 'functional-APIs test report'
