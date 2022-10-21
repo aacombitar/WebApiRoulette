@@ -65,7 +65,7 @@ steps:
                 serverName: jsonplaceholder.typicode.com
           execution:
           - scenario:
-              script: sample-apis-automation.jmx
+              script: prueba-concepto.jmx
           reporting:
           - module: junit-xml
             filename: junitReport.xml
